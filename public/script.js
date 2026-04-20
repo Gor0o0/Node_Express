@@ -1,26 +1,37 @@
-const logInput = document.getElementById('input-login').value;
-const passInput = document.getElementById('input-pass').value;
-
-const logInBtn = document.getElementById('logInBtn');
-logInBtn.addEventListener('click', () => {});
-
-async function ResponseServer() { //> это функция для отправки запроса на сервер
-    const res = await fetch('api/', {
-        method: 'POST',
-        headers:{"Content-Type": "application/json"},
-        body: JSON.stringify({message: 'Hello World'})
-    });
-}
-
-
 async function singIn(){
+    const login = document.getElementById("input-login").value;
+    const password = document.getElementById("input-pass").value;
     
+    const res = await fetch("/api/login", {
+        method: "POST",
+        headers: {"content-type" : "application/json"},
+        body: JSON.stringify({login, password})
+    });
+    
+    const data = await res.json();
+    if(data.success){
+        alert(data.message);
+    }
+    else{
+        alert(data.error);
+    }
 }
 
 async function singUp(){
-    const res = await fetch('api/register', {
-        method: 'POST',
-        headers:{"Content-Type": "application/json"},
-        body: JSON.stringify({login:login, password: password})
+    const login = document.getElementById("input-login").value;
+    const password = document.getElementById("input-pass").value;
+
+    const res = await fetch("/api/register", {
+        method: "POST",
+        headers: {"content-type" : "application/json"},
+        body: JSON.stringify({login, password})
     });
+    
+    const data = await res.json();
+    if(data.success){
+        alert(data.message);
+    }
+    else{
+        alert(data.error);
+    }
 }

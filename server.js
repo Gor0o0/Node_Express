@@ -1,41 +1,24 @@
-// -=-=-=|Модульный js|=-=-=-
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import express from "express";
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+import pageRouter from "./routers/pages.js";
+import apiRouter from "./routers/api.js";
+import { initDb } from "./database/database.js";
 
-
-
-const app = express()
+const app = express();
 const port = 3000;
 
-// -=-= Middleware | промежуточные слои. Подобие импортов =-=-
-app.use(express.json()); //> это для парсинга JSON-тела запроса
-app.use(express.urlencoded({ extended: true })); //> это для парсинга URL-кодированных тела запроса | extended true - для парсинга вложенных объектов
-app.use(express.static('public')); //> это для предоставления статических файлов из директории public
+await initDb();
 
-// -=-= Routers | Обработчики запросов =-=-
-app.get('/', (req, res) => {
-  res.sendFile(__dirname, '/public/index.html') //> это для отправки файла index.html или другого указаного
-});
+//midlleware - промежуточные слои
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(express.static("public"));
 
-app.post('/api', (req, res) => {
-  const {message} = req.body
-  console.log(`${message}`);
-  nextTick();
-});
+//routers - обработчики запросов
+app.use("/", pageRouter);
+app.use("/api", apiRouter);
 
-app.put('/api', (req, res) => {
-
-});
-
-app.delete('/api', (req, res) => {
-  res.send('Delete World')
-});
-
-// -=-= Server | Запуск сервера =-=-
+// запуск
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`)
-})
+    console.log(`http://localhost:${port}`);
+});
